@@ -9,6 +9,13 @@ Vagrant.configure("2") do |config|
     v.cpus = 2
   end
 
+  # Bastion
+  config.vm.define "bastion" do |bastion|
+    bastion.vm.box = IMAGE
+    bastion.vm.hostname = "bastion"
+    bastion.vm.network "private_network", ip: "192.168.50.8"
+  end
+
   # Control plane
   (1..NB_CONTROL_PLANE).each do |i|
     config.vm.define "control-plane#{i}" do |control_plane|
@@ -19,6 +26,7 @@ Vagrant.configure("2") do |config|
       control_plane.vm.provision "file", source: "./.ssh/id_rsa", destination: "/tmp/id_rsa"
       control_plane.vm.provision "shell", privileged: true, path: "scripts/init_k8s.sh"
       control_plane.vm.provision "shell", privileged: true, path: "scripts/init_master.sh"
+      control_plane.vm.provision "shell", privileged: true, path: "scripts/ssh_restriction.sh"
     end
   end
 

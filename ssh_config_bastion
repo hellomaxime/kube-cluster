@@ -1,0 +1,14 @@
+Host bastion
+  HostName 192.168.50.8
+  User vagrant
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  IdentityFile /home/maxime/Documents/kube-cluster/.vagrant/machines/bastion/virtualbox/private_key
+
+Host control-plane1
+  HostName 192.168.50.11
+  User vagrant
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  IdentityFile /home/maxime/Documents/kube-cluster/.vagrant/machines/control-plane1/virtualbox/private_key
+  ProxyJump bastion

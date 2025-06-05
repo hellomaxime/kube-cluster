@@ -1,5 +1,5 @@
 
-Ce dépôt contient les scripts vagrant permettant de provisionner 3 VMs pour y déployer un cluster Kubernetes avec 1 master et 2 workers
+Ce dépôt contient les scripts vagrant permettant de provisionner 4 VMs pour y déployer un bastion et un cluster Kubernetes avec 1 master et 2 workers
 
 ## Versions
 
@@ -48,15 +48,15 @@ vagrant destroy
 ```
 
 ## Accès au cluster
-via la vm control-plane1
+via la vm control-plane1 (avec rebond sur la VM bastion)
 ```bash
-vagrant ssh control-plane1
+ssh -F ssh_config_bastion control-plane1
 ```
 
 via machine hôte avec kubectl
 ```bash
 # récupérer le kubeconfig
-vagrant ssh control-plane1 -c "cat /home/vagrant/.kube/config" > /tmp/vagrant-vbox-kubeconfig
+ssh -F ssh_config_bastion control-plane1 "cat /home/vagrant/.kube/config" > /tmp/vagrant-vbox-kubeconfig
 
 export KUBECONFIG=/tmp/vagrant-vbox-kubeconfig
 
@@ -72,13 +72,15 @@ unset KUBECONFIG
 
 ### Explications
 
-Le Vagrantfile permet de provisionner 3 VMs : 1 master et 2 workers  
+Le Vagrantfile permet de provisionner 4 VMs : 1 bastion, 1 master et 2 workers  
 
 Le script "init_k8s.sh" installe toutes les paquets nécessaires sur les VMs, notamment : docker, kubelet, kubeadm et kubectl  
 
 Le script "init_master.sh" initialise le cluster sur le noeud master en installant etcd, le kubelet, l'apiserver, le controller-manager et le scheduler
 
 Le script "init_worker.sh" permet aux noeuds worker de s'adresser au noeud master afin de récupérer la commande pour rejoindre le cluster
+
+Le script "ssh_restriction.sh" appliqué sur la VM master autorise uniquement les connexions SSH provenant de bastion et des workers  
 
 ## Troubleshooting
 
